@@ -40,7 +40,7 @@ var router = new VueRouter({
 	routes: [{
 			path: "/",
 			name: "login",
-			redirect: '/login'
+			redirect: "/login"
 		},
 		{
 			path: "/login",
@@ -48,24 +48,20 @@ var router = new VueRouter({
 		},
 		{
 			path: "/home",
+			name:"home",
 			component: HomeIndex,
+			redirect:"/maincon",
 			meta: { requiresAuth: true },
 			children: [
 				{
 				// userinfo 会被渲染在 home 的 <router-view> 中
-				path: '/userinfo',
-				component: UserInfo
+				path: "/userinfo",
+				component: UserInfo,
 				},
 				{
 				// userinfo 会被渲染在 home 的 <router-view> 中
-				path: '/',
-				name:'maincon',
-				redirect: '/maincon'
-				},
-				{
-				// userinfo 会被渲染在 home 的 <router-view> 中
-				path: '/maincon',
-				component: MainCon
+				path: "/maincon",
+				component: MainCon,
 				}
 			]
 		},
@@ -73,10 +69,8 @@ var router = new VueRouter({
 })
 
 router.beforeEach((to, from, next) => {
+  const role = sessionStorage.getItem('islogin');
   if (to.matched.some(record => record.meta.requiresAuth)) {
-    // this route requires auth, check if logged in
-    // if not, redirect to login page.
-	const role = sessionStorage.getItem('islogin');
     if (role==""||role==undefined) {
       next({
         path: '/login'

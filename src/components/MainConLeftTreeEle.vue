@@ -16,8 +16,8 @@
 		},
 		methods: {
 			handleNodeClick(data) {
-				console.log(data);
-				this.bus.$emit("leftTree", data);
+				console.log('data',data);
+				this.$emit("leftTree", data);
 			}
 		}
 	};

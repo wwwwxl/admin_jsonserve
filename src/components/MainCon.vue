@@ -1,10 +1,10 @@
 <template>
 	<el-container>
 			<el-aside width="200px">
-				<leftnavtree :leftData="leftData"></leftnavtree>
+				<leftnavtree :leftData="leftData" @leftTree="left_click"></leftnavtree>
 			</el-aside>
 			<el-main>
-				<tablecon :tableData="tableData" @addData="addSuccess"></tablecon>
+				<tablecon :tableData="tableData" :treeClickData="leftClick" @addData="addSuccess"></tablecon>
 			</el-main>
 	</el-container>
 </template>
@@ -17,7 +17,8 @@
 		data: () => {
 			return {
 				tableData:[],
-				leftData:[]
+				leftData:[],
+				leftClick:''
 			}
 		},
 		components: {
@@ -95,6 +96,11 @@
 			//增加数据\更新数据成功
 			addSuccess(){
 				this.getallFloor();
+			},
+			//左侧树点击事件
+			left_click(val){
+				console.log('val',val);
+				this.leftClick=val;
 			}
 		}
 

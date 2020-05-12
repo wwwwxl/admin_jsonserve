@@ -63,19 +63,16 @@
 import tabledialog from './tableDialog.vue';
 export default {
 	name: 'submain',
-	props:['tableData'],
+	props:['tableData','treeClickData'],
 	data() {
 		return {
 			showflag: false,
 			btnName:'',
-			formdata: {
+			formdata:{
 				id:'',
-				parentname: '',
-				name: ''
-			},
-			addLeftTree: {
-				left_id: '',
-				left_name: ''
+				name:'',
+				parentname:'',
+				floorid:'',
 			},
 			radioObj: {
 				radioindex: '',
@@ -112,78 +109,48 @@ export default {
 		},
 		//表格操作删除数据(索引,表格数组数据)
 		deleteRow(index, rows) {
-			// rows.splice(index, 1);
 			let id=rows[index].id;
-			console.log('id',id,index,rows);
+			
 			//删除楼层科室数据
-			this.delectAxios("floorinfo/"+id,{
+			// this.delectAxios("floorinfo"+id,{
 				
-			}).then((res)=>{
-				console.log(res);
-				this.$notify({
-					title: '提示',
-					message: '删除成功',
-					type: 'success',
-					duration:'1000'
-				});
-			}).catch((error)=>{
-				console.log(error);
-			});
-		},
-		//表格操作编辑行事件
-		editRow(index, rows) {
-			this.formdata.id=rows.floorId;
-			this.formdata.parentname=rows.parentName;
-			this.formdata.name=rows.floorName;
-			this.showflag = true;
-		},
-		//左侧树点击事件,监听子组件传递过来的对象
-		leftTree() {
-			this.bus.$on('leftTree', value => {
-				this.addLeftTree.left_id = value.id;
-				this.addLeftTree.left_name = value.label;
-				
-				this.formdata.id=value.id;
-				this.formdata.parentname = value.label;
-			});
-		},
-		//表格头操作事件
-		addTab() {
-			//组件销毁前需要解绑事件。否则会出现重复触发事件的问题
-			this.bus.$off('leftTree');
-			this.leftTree();
-			if (this.addLeftTree.left_id == '') {
-				this.$message({
-					showClose: true,
-					message: '请在左侧树状图选择一个父级',
-					duration: '1500'
-				});
-			} else {
-				console.log('this.addLeftTree',this.addLeftTree);
-				this.formdata.parentname=this.addLeftTree.left_name;
-				this.btnName="增加楼层科室信息",
-				this.showflag = true;
-			}
-		},
-		//表格头编辑事件
-		editTab() {
-			//0和'空'默认相等
-			if (this.radioObj.radioindex === '') {
-				this.$message({
-					showClose: true,
-					message: '请选择需要编辑的行数据',
-					type: 'warning',
-					duration: '1500'
-				});
-			} else {
-				console.log('this.radioObj',this.radioObj);
-				this.formdata.id=this.radioObj.radiocont.floorId;
-				console.log('this.formdata.id',this.formdata.id);
-				this.formdata.parentname=this.radioObj.radiocont.parentName;
-				this.formdata.name=this.radioObj.radiocont.floorName;
-				this.btnName="编辑楼层科室信息",
-				this.showflag = true;
-			}
+			// }).then((res)=>{
+			// 	this.$notify({
+			// 		title: '提示',
+			// 		message: '删除成功',
+			// 		type: 'success',
+			// 		duration:'1000'
+			// 	});
+			// }).catch((error)=>{
+			// 	console.log(error);
+			// });
+			$.ajax({
+				url: "http://localhost:3000/floorinfo/"+id,
+				async: false, //改为同步避免运行跳过(一定要是同步不然会获取不到数据)
+				dataType: 'json',
+				type: "DELETE",
+				xhrFields: {
+					withCredentials: true
+				},
+				data: {
+					
+				},
+				beforeSend: function() {
+			
+				},
+				complete: function() {
+			
+				},
+				success: (res)=> {
+						this.$notify({
+							title: '提示',
+							message: '删除成功',
+							type: 'success',
+							duration:'1000'
+						});
+				}
+			
+			})
 		},
 		//表格头删除事件
 		delTab() {
@@ -198,17 +165,68 @@ export default {
 				this.deleteRow(this.radioObj.radioindex, this.tableData);
 			}
 		},
+		//表格操作编辑行事件
+		editRow(index, rows) {
+			this.formdata.id=rows.id;
+			this.formdata.parentname=rows.parentName;
+			this.formdata.name=rows.floorName;
+			this.formdata.floorid=rows.floorId;
+			this.showflag = true;
+		},
+		//表格头编辑事件
+		editTab() {
+			//0和'空'默认相等
+			console.log('this.radioObj',this.radioObj);
+			if (this.radioObj.radiocont == null||this.radioObj.radiocont=="") {
+				this.$message({
+					showClose: true,
+					message: '请选择需要编辑的行数据',
+					type: 'warning',
+					duration: '1500'
+				});
+			} else {
+				
+				this.formdata.id=this.radioObj.radiocont.id;
+				this.formdata.parentname=this.radioObj.radiocont.parentName;
+				this.formdata.name=this.radioObj.radiocont.floorName;
+				this.formdata.floorid=this.radioObj.radiocont.floorId;
+				
+				this.btnName="编辑楼层科室信息",
+				this.showflag = true;
+			}
+		},
+		//表格头操作事件
+		addTab() {
+				if (this.treeClickData == "") {
+					this.$message({
+						showClose: true,
+						message: '请在左侧树状图选择一个父级',
+						duration: '1500'
+					});
+				}else if(this.treeClickData.id !="10" ){
+					this.$message({
+						showClose: true,
+						message: '只能添加一级楼层',
+						duration: '1500'
+					});
+				} else {
+					this.formdata.id=this.treeClickData.id;
+					this.formdata.parentname=this.treeClickData.label;
+					
+					this.btnName="增加楼层科室信息",
+					this.showflag = true;
+					
+				}
+			
+		},
 		//弹出框表格提交
 		tabsubmit(val) {
-			//需要提交到服务器数据
-			console.log('val',val);
 			//往服务器写入数据
 			if(this.btnName=="增加楼层科室信息"){
 				let floorid=val.id+''+parseInt(Math.random(0,1)*100);
 				let children_arr=[];
 				
-					this.postAxios("floorinfo/",{
-							"id":floorid,
+					this.postAxios("floorinfo",{
 							"floorleves":val.id.length/2,
 							"floorId": floorid,
 							"floorNo": floorid,
@@ -233,17 +251,18 @@ export default {
 				
 	
 			}else{
-				let floorid=val.id+''+parseInt(Math.random(0,1)*100);
+				console.log('val',val)
+				let id=val.id+''+parseInt(Math.random(0,1)*100);
 				let children_arr=[];
 				//发起请求更新编辑楼层科室信息
 				this.putAxios("/floorinfo/"+val.id, {
-					"id":floorid,
-					"floorleves":val.id.length/2,
-					"floorId": floorid,
-					"floorNo": floorid,
+					"id":id,
+					"floorleves":'1',
+					"floorId": val.floorid,
+					"floorNo": val.floorid,
 					"label": val.name,
 					"floorName":val.name,
-					"parentId": val.id,
+					"parentId": '10',
 					"parentName":val.parentname,
 					"children": [],
 				}).then((res) => {
@@ -255,6 +274,7 @@ export default {
 						duration:'1500'
 					});
 					//刷新组件
+					this.radioObj.radioindex = '';
 					this.$emit("addData");
 				}).catch((res) => {
 					console.log("error", res);
