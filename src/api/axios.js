@@ -71,47 +71,15 @@ function apiAxios(method, url, params) {
 		axios(httpDefault)
 			// 此处的.then属于axios
 			.then((res) => {
-				//successState(res);
 				// 隐藏loading
 				loadingInstance.close();
 				resolve(res);
 			}).catch((response) => {
-				//errorState(response);
 				// 隐藏loading
 				loadingInstance.close();
 				reject(response);
 			})
 	})
-}
-
-
-// 个人自定义封装数据返回失败提示函数---------------------------------------------------------------------------
-function errorState(response) {
-	// 隐藏loading
-	loadingInstance.close();
-	console.log("fail_response", response);
-	// 如果http状态码正常,但是new promise其他过程出错，则直接返回数据
-	if (response && (response.status === 200 || response.status === 304 || response.status === 400)) {
-		// 如果不需要除了data之外的数据，可以直接 return response.data
-		return response.data
-	} else {
-		alert('数据获取错误');
-	}
-}
-
-// 个人自定义封装数据返回成功提示函数---------------------------------------------------------------------------
-function successState(res) {
-	// 隐藏loading
-	loadingInstance.close();
-	//如果请求成功,但是后端返回不是正确的请求
-	// 统一判断后端返回的错误码
-	if (res.data.code === '000000') {
-		alert('success')
-		return res.data
-	} else {
-		//这里处理后端返回的错误信息
-		alert('数据获取错误');
-	}
 }
 
 

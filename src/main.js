@@ -27,11 +27,16 @@ import MainCon from './components/MainCon.vue'
 Vue.use(animated)
 Vue.use(VueRouter)
 Vue.use(ElementUI);
+
 Vue.config.productionTip = false
 
 import axiosApi from '@/api/axios.js'
 
+import cxyreq from  '@/api/ajax.js'
+
 Vue.use(axiosApi);
+Vue.use(cxyreq);
+
 
 //设置路由
 var router = new VueRouter({

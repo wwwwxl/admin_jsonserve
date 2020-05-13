@@ -111,46 +111,47 @@ export default {
 		deleteRow(index, rows) {
 			let id=rows[index].id;
 			
+			let url="floorinfo/"+id;
+			let params=null;
 			//删除楼层科室数据
-			// this.delectAxios("floorinfo"+id,{
-				
-			// }).then((res)=>{
-			// 	this.$notify({
-			// 		title: '提示',
-			// 		message: '删除成功',
-			// 		type: 'success',
-			// 		duration:'1000'
-			// 	});
-			// }).catch((error)=>{
-			// 	console.log(error);
-			// });
-			$.ajax({
-				url: "http://localhost:3000/floorinfo/"+id,
-				async: false, //改为同步避免运行跳过(一定要是同步不然会获取不到数据)
-				dataType: 'json',
-				type: "DELETE",
-				xhrFields: {
-					withCredentials: true
-				},
-				data: {
-					
-				},
-				beforeSend: function() {
-			
-				},
-				complete: function() {
-			
-				},
-				success: (res)=> {
-						this.$notify({
-							title: '提示',
-							message: '删除成功',
-							type: 'success',
-							duration:'1000'
-						});
-				}
-			
+			this.delAjax(url,params).then((res)=>{
+				this.$notify({
+					title: '提示',
+					message: '删除成功',
+					type: 'success',
+					duration:'1000'
+				});
+				this.$emit("addData");
+			}).catch((error)=>{
+				console.log('error',error);
 			})
+			// $.ajax({
+			// 	url: "http://localhost:3000/floorinfo/"+id,
+			// 	async: false, //改为同步避免运行跳过(一定要是同步不然会获取不到数据)
+			// 	dataType: 'json',
+			// 	type: "DELETE",
+			// 	xhrFields: {
+			// 		withCredentials: true
+			// 	},
+			// 	data: {
+					
+			// 	},
+			// 	beforeSend: function() {
+			
+			// 	},
+			// 	complete: function() {
+			
+			// 	},
+			// 	success: (res)=> {
+			// 			this.$notify({
+			// 				title: '提示',
+			// 				message: '删除成功',
+			// 				type: 'success',
+			// 				duration:'1000'
+			// 			});
+			// 	}
+			
+			// })
 		},
 		//表格头删除事件
 		delTab() {
@@ -225,28 +226,53 @@ export default {
 			if(this.btnName=="增加楼层科室信息"){
 				let floorid=val.id+''+parseInt(Math.random(0,1)*100);
 				let children_arr=[];
-				
-					this.postAxios("floorinfo",{
-							"floorleves":val.id.length/2,
-							"floorId": floorid,
-							"floorNo": floorid,
-							"label": val.name,
-							"floorName":val.name,
-							"parentId": val.id,
-							"parentName":val.parentname,
-							"children": [],
+					//axios请求方法
+					// this.postAxios("floorinfo",{
+					// 		"floorleves":val.id.length/2,
+					// 		"floorId": floorid,
+					// 		"floorNo": floorid,
+					// 		"label": val.name,
+					// 		"floorName":val.name,
+					// 		"parentId": val.id,
+					// 		"parentName":val.parentname,
+					// 		"children": [],
 							
-					}).then((res)=>{
-						//console.log(res);
-						this.$notify({
-							title: '提示',
-							message: '增加楼层信息成功',
-							type: 'success',
-							duration:'1500'
-						});
-						this.$emit("addData");
+					// }).then((res)=>{
+					// 	//console.log(res);
+					// 	this.$notify({
+					// 		title: '提示',
+					// 		message: '增加楼层信息成功',
+					// 		type: 'success',
+					// 		duration:'1500'
+					// 	});
+					// 	this.$emit("addData");
+					// }).catch((error)=>{
+					// 	console.log("error",error);
+					// })
+					
+					//ajax请求方法
+					let url="floorinfo";
+					let params={
+								"floorleves":val.id.length/2,
+								"floorId": floorid,
+								"floorNo": floorid,
+								"label": val.name,
+								"floorName":val.name,
+								"parentId": val.id,
+								"parentName":val.parentname,
+								"children": []
+					}
+					this.pushAjax(url,params).then((res)=>{
+						//console.log('res',res);
+							this.$notify({
+								title: '提示',
+								message: '增加楼层信息成功',
+								type: 'success',
+								duration:'1500'
+							});
+							this.$emit("addData");
 					}).catch((error)=>{
-						console.log("error",error);
+						console.log('error',error);
 					})
 				
 	
@@ -254,7 +280,7 @@ export default {
 				console.log('val',val)
 				let id=val.id+''+parseInt(Math.random(0,1)*100);
 				let children_arr=[];
-				//发起请求更新编辑楼层科室信息
+				//发起请求更新编辑楼层科室信息===axios请求方法
 				this.putAxios("/floorinfo/"+val.id, {
 					"id":id,
 					"floorleves":'1',
@@ -279,6 +305,11 @@ export default {
 				}).catch((res) => {
 					console.log("error", res);
 				});
+				
+				
+				
+				
+				
 			}
 			this.showflag = false;
 		},

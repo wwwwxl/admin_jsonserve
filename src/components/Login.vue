@@ -71,8 +71,7 @@
 					this.alertinfo = "请输入用户密码";
 					this.setShowTime();
 				} else {
-					// sessionStorage.setItem('islogin',1);
-					// this.$router.push({path:'/home'});
+					
 					$.ajax({
 						url: "http://localhost:3000/userinfo",
 						async: false, //改为同步避免运行跳过(一定要是同步不然会获取不到数据)
@@ -96,16 +95,7 @@
 						}
 
 					})
-					// //获取用户信息
-					// this.getAxios("/userinfo", {
-
-					// }).then((res) => {
-					// 	console.log("userinfo", res);
-					// 	sessionStorage.setItem('islogin',1);
-					// 	this.$router.push({path:'/home'});
-					// }).catch((res) => {
-					// 	console.log("error", res);
-					// });
+					
 				}
 			},
 			setShowTime() {
