@@ -23,6 +23,7 @@ import Login from './components/Login.vue'
 import HomeIndex from './components/HomeIndex.vue'
 import UserInfo from './components/UserInfo.vue'
 import MainCon from './components/MainCon.vue'
+import MainConRoom from './components/MainConRoom.vue'
 
 Vue.use(animated)
 Vue.use(VueRouter)
@@ -67,6 +68,11 @@ var router = new VueRouter({
 				// userinfo 会被渲染在 home 的 <router-view> 中
 				path: "/maincon",
 				component: MainCon,
+				},
+				{
+				// userinfo 会被渲染在 home 的 <router-view> 中
+				path: "/mainconroom",
+				component: MainConRoom
 				}
 			]
 		},

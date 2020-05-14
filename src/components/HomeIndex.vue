@@ -23,7 +23,9 @@
 					</div>
 					<!-- 显示主要内容 -->
 					<div class="maincon">
-						<router-view></router-view>
+						<keep-alive>
+							<router-view></router-view>
+						</keep-alive>
 					</div>
 				</el-main>
 				<el-footer>后台管理模板</el-footer>
@@ -131,6 +133,19 @@
 			subclick(subval){
 				//console.log('subval',subval);
 				this.nav_tip.leves_two=subval.subname;
+				let sub_id=subval.id;
+				switch (sub_id){
+					case "10010101":
+					this.$router.push({path:'/maincon'});
+					break;
+					case "10010102":
+					this.$router.push({path:'/mainconroom'});
+					break;
+					default:
+					break;
+				}
+				
+				
 			}
 			
 		}

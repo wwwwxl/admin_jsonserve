@@ -1,10 +1,10 @@
 <template>
-	<el-dialog :title="operaName" :visible.sync="dialogFormVisible">
+	<el-dialog :title="operaName" :visible.sync="dialogFormVisible" :before-close="dialogCancel">
 		<el-form :model="form" ref="form">
-			<el-form-item label="父级楼层" :label-width="formLabelWidth" prop="parentname" :rules="[{ required: true, message: '父级楼层不能为空', trigger: 'blur' }]">
+			<el-form-item :label="labelName[0].label" :label-width="formLabelWidth" prop="parentname" :rules="[{ required: true, message: '父级名称不能为空', trigger: 'blur' }]">
 				<el-input v-model="form.parentname" autocomplete="off" disabled></el-input>
 			</el-form-item>
-			<el-form-item label="楼层名称" :label-width="formLabelWidth" prop="name" :rules="[{ required: true, message: '楼层名称不能为空', trigger: 'blur' }]">
+			<el-form-item :label="labelName[1].label" :label-width="formLabelWidth" prop="name" :rules="[{ required: true, message: '名称不能为空', trigger: 'blur' }]">
 				<el-input v-model="form.name" autocomplete="off"></el-input>
 			</el-form-item>
 		</el-form>
@@ -16,7 +16,7 @@
 </template>
 <script>
 	export default {
-		props: ['form', 'dialogFormVisible', 'operaName'],
+		props: ['form', 'dialogFormVisible', 'operaName','labelName'],
 		data() {
 			return {
 				formLabelWidth: '120px'
