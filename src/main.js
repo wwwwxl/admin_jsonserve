@@ -19,11 +19,12 @@ import $ from 'jquery'
 
 import animated from 'animate.css'
 
-import Login from './components/Login.vue'
-import HomeIndex from './components/HomeIndex.vue'
-import UserInfo from './components/UserInfo.vue'
-import MainCon from './components/MainCon.vue'
-import MainConRoom from './components/MainConRoom.vue'
+import Login from './components/Login/Login.vue'
+import HomeLayOut from './components/Home/HomeLayOut.vue'
+import UserInfo from './components/UserInfo/UserInfo.vue'
+import SectionLayOut from './components/FloorSection/FloorSection/SectionLayOut.vue'
+import RoomLayOut from './components/FloorSection/FloorRoom/RoomLayOut.vue'
+import BedLayOut from './components/FloorSection/FloorBed/BedLayOut.vue'
 
 Vue.use(animated)
 Vue.use(VueRouter)
@@ -31,10 +32,9 @@ Vue.use(ElementUI);
 
 Vue.config.productionTip = false
 
+
 import axiosApi from '@/api/axios.js'
-
 import cxyreq from  '@/api/ajax.js'
-
 Vue.use(axiosApi);
 Vue.use(cxyreq);
 
@@ -53,10 +53,10 @@ var router = new VueRouter({
 			component: Login
 		},
 		{
-			path: "/home",
-			name:"home",
-			component: HomeIndex,
-			redirect:"/maincon",
+			path: "/homelatout",
+			name:"homelatout",
+			component: HomeLayOut,
+			redirect:"/sectionlayout",
 			meta: { requiresAuth: true },
 			children: [
 				{
@@ -65,15 +65,17 @@ var router = new VueRouter({
 				component: UserInfo,
 				},
 				{
-				// userinfo 会被渲染在 home 的 <router-view> 中
-				path: "/maincon",
-				component: MainCon,
+				path: "/sectionlayout",
+				component: SectionLayOut,
 				},
 				{
-				// userinfo 会被渲染在 home 的 <router-view> 中
-				path: "/mainconroom",
-				component: MainConRoom
-				}
+				path: "/roomlayout",
+				component: RoomLayOut
+				},
+				{
+				path: "/bedlayout",
+				component: BedLayOut
+				},
 			]
 		},
 	]

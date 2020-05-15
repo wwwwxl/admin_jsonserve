@@ -1,12 +1,16 @@
 <template>
 	<el-container>
+		<!-- 头部导航栏 -->
 		<el-header>
 			<headnav @mytopnav="hometopnav" :menulist="toplistAll"></headnav>
 		</el-header>
+		<!-- 中间内容 -->
 		<el-container class="sec_con">
+			<!-- 左侧导航栏 -->
 			<el-aside width="auto">
 				<leftnav :tit_menu="leftlist" @submenu="subclick"></leftnav>
 			</el-aside>
+			<!-- 中间主要切换显示的内容 -->
 			<el-container>
 				<el-main id="main">
 					<!-- 导航指示 -->
@@ -21,13 +25,14 @@
 								<span>{{nav_tip.leves_two}}</span>
 							</div>
 					</div>
-					<!-- 显示主要内容 -->
+					<!-- 切换显示树状、表格、操作主要内容 -->
 					<div class="maincon">
 						<keep-alive>
 							<router-view></router-view>
 						</keep-alive>
 					</div>
 				</el-main>
+				<!-- 底部链接 -->
 				<el-footer>后台管理模板</el-footer>
 			</el-container>
 		</el-container>
@@ -36,7 +41,7 @@
 
 <script>
 	import headnav from './HeadNav.vue'
-	import leftnav from './EleLeftNav.vue'
+	import leftnav from './LeftNav.vue'
 	
 	export default {
 		data: () => {
@@ -57,14 +62,12 @@
 			leftnav
 		},
 		created() {
-			//判断路由所在
+			//判断路由所在决定内容和导航指示条
 			let current_route=this.$route.path;
 			if(current_route!="/userinfo"){
 					//获取所有菜单
 					this.getAxios("/topmenu",{
-						
 					}).then((res)=>{
-						//console.log("topmenu",res);
 						this.allmenu=res;
 						let newleft=[];
 						let newtop=[];
@@ -90,7 +93,6 @@
 		methods: {
 			//顶级菜单点击事件
 			hometopnav(val){
-				//console.log('hometopnav',val);
 				//找到一级导航名称提示
 				this.toplistAll.forEach((item)=>{
 					if(item.id==val){
@@ -127,19 +129,21 @@
 					this.nav_tip.leves_two="";
 				}
 				//回到首页
-				this.$router.push({path:'/home'});
+				this.$router.push({path:'/homelatout'});
 			},
 			//左侧导航栏点击事件
 			subclick(subval){
-				//console.log('subval',subval);
 				this.nav_tip.leves_two=subval.subname;
 				let sub_id=subval.id;
 				switch (sub_id){
 					case "10010101":
-					this.$router.push({path:'/maincon'});
+					this.$router.push({path:'/sectionlayout'});
 					break;
 					case "10010102":
-					this.$router.push({path:'/mainconroom'});
+					this.$router.push({path:'/roomlayout'});
+					break;
+					case "10010103":
+					this.$router.push({path:'/bedlayout'});
 					break;
 					default:
 					break;
@@ -153,7 +157,7 @@
 </script>
 
 <style scoped>
-	@import url("../common/icon.css");
+	@import url("../../common/icon.css");
 		/* 顶部导航栏提示 */
 		.main_top {
 			display: flex;

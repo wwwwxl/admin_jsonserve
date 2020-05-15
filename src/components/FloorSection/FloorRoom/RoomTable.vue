@@ -2,7 +2,7 @@
 <template>
 	<div class="subcon_box">
 		<!-- 弹框 -->
-		<tabledialog :form="formdata" :dialogFormVisible="showflag" :operaName="btnName" :labelName="label_name"  @dialogSubmit="tabsubmit" @dialogCancel="tabcancel"></tabledialog>
+		<roomdialog :form="formdata" :dialogFormVisible="showflag" :operaName="btnName" :labelName="label_name"  @dialogSubmit="tabsubmit" @dialogCancel="tabcancel"></roomdialog>
 		<!-- 按钮操作组 -->
 		<el-button-group>
 			<el-button @click.native="addTab" size="mini" type="primary" icon="el-icon-circle-plus-outline">增加</el-button>
@@ -63,7 +63,7 @@
 </template>
 
 <script>
-import tabledialog from './tableDialog.vue';
+import roomdialog from './RoomDialog.vue';
 export default {
 	name: 'submain',
 	props:['tableData','treeClickData'],
@@ -89,7 +89,7 @@ export default {
 		};
 	},
 	components: {
-		tabledialog
+		roomdialog
 	},
 	methods: {
 		//行数据的 Key,//通过行数据获取选中行的索引
@@ -148,7 +148,7 @@ export default {
 		editRow(index, rows) {
 			this.formdata.id=rows.id;
 			this.formdata.parentname=rows.parentName;
-			this.formdata.name=rows.floorName;
+			this.formdata.name=rows.roomName;
 			this.formdata.nameId=rows.roomId;
 			this.showflag = true;
 		},

@@ -64,7 +64,7 @@
 					this.index = key;
 					this.$emit("mytopnav", this.index);
 					this.$router.push({
-						path: 'userinfo'
+						path: '/userinfo'
 					});
 				} else {
 					this.index = key;

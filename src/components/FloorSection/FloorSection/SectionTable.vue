@@ -1,7 +1,7 @@
 <!-- 操作、表格、页码 -->
 <template>
 	<div class="subcon_box">
-		<tabledialog :form="formdata" :dialogFormVisible="showflag" :operaName="btnName" :labelName="label_name"  @dialogSubmit="tabsubmit" @dialogCancel="tabcancel"></tabledialog>
+		<sectiondialog :form="formdata" :dialogFormVisible="showflag" :operaName="btnName" :labelName="label_name"  @dialogSubmit="tabsubmit" @dialogCancel="tabcancel"></sectiondialog>
 		<el-button-group>
 			<el-button @click.native="addTab" size="mini" type="primary" icon="el-icon-circle-plus-outline">增加</el-button>
 			<el-button @click.native="editTab" size="mini" type="warning" icon="el-icon-edit">修改</el-button>
@@ -60,7 +60,7 @@
 </template>
 
 <script>
-import tabledialog from './tableDialog.vue';
+import sectiondialog from './SectionDialog.vue';
 export default {
 	name: 'submain',
 	props:['tableData','treeClickData'],
@@ -86,7 +86,7 @@ export default {
 		};
 	},
 	components: {
-		tabledialog
+		sectiondialog
 	},
 	methods: {
 		//行数据的 Key,//通过行数据获取选中行的索引

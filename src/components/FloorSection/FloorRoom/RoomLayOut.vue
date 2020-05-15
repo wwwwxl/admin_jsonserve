@@ -1,17 +1,17 @@
 <template>
 	<el-container>
 			<el-aside width="200px">
-				<leftnavtree :leftData="leftData" @leftTree="left_click"></leftnavtree>
+				<roomtree :leftData="leftData" @leftTree="left_click"></roomtree>
 			</el-aside>
 			<el-main>
-				<roominfo :tableData="tableData" :treeClickData="leftClick" @addData="addSuccess"></roominfo>
+				<roomtable :tableData="tableData" :treeClickData="leftClick" @addData="addSuccess"></roomtable>
 			</el-main>
 	</el-container>
 </template>
 <!-- 用户主内容包含树状图和主要内容 -->
 <script>
-	import leftnavtree from './MainConLeftTreeEle.vue'
-	import roominfo from './RoomInfo.vue'
+	import roomtree from './RoomTree.vue'
+	import roomtable from './RoomTable.vue'
 	export default {
 		name: 'maincon',
 		data: () => {
@@ -22,8 +22,8 @@
 			}
 		},
 		components: {
-			leftnavtree,
-			roominfo
+			roomtree,
+			roomtable
 		},
 		created() {
 			this.getallFloor();
