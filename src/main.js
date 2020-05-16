@@ -25,6 +25,7 @@ import UserInfo from './components/UserInfo/UserInfo.vue'
 import SectionLayOut from './components/FloorSection/FloorSection/SectionLayOut.vue'
 import RoomLayOut from './components/FloorSection/FloorRoom/RoomLayOut.vue'
 import BedLayOut from './components/FloorSection/FloorBed/BedLayOut.vue'
+import CanteenLayOut from './components/CanteenManage/ConsumCanteen/CanteenLayOut.vue'
 
 Vue.use(animated)
 Vue.use(VueRouter)
@@ -53,8 +54,8 @@ var router = new VueRouter({
 			component: Login
 		},
 		{
-			path: "/homelatout",
-			name:"homelatout",
+			path: "/homelayout",
+			name:"homelayout",
 			component: HomeLayOut,
 			redirect:"/sectionlayout",
 			meta: { requiresAuth: true },
@@ -75,6 +76,10 @@ var router = new VueRouter({
 				{
 				path: "/bedlayout",
 				component: BedLayOut
+				},
+				{
+				path: "/canteenlayout",
+				component: CanteenLayOut
 				},
 			]
 		},

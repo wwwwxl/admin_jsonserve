@@ -36,9 +36,10 @@
 				<el-table-column resizable show-overflow-tooltip min-width="90px" align="center" sortable fixed prop="bedId" label="床位id"></el-table-column>
 				<el-table-column resizable show-overflow-tooltip min-width="110px" align="center" sortable fixed prop="bedNo" label="床位编号"></el-table-column>
 				<el-table-column resizable show-overflow-tooltip min-width="100px" align="center" prop="bedName" label="床位名称"></el-table-column>
+				<el-table-column resizable show-overflow-tooltip min-width="100px" align="center" prop="bedType" label="床位类型"></el-table-column>
 				<el-table-column resizable show-overflow-tooltip min-width="100px" align="center" prop="parentId" label="父级id"></el-table-column>
 				<el-table-column resizable show-overflow-tooltip min-width="100px" align="center" prop="parentName" label="父级名称"></el-table-column>
-				<el-table-column label="操作" align="center">
+				<el-table-column label="操作" align="center" min-width="100px">
 					<!-- vue组件绑定事件时候，必须加上native ，否则会认为监听的是来自Item组件自定义的事件 -->
 					<template slot-scope="scope">
 						<el-button size="mini" @click.prevent.stop="editRow(scope.$index, scope.row)" type="text">编辑</el-button>
@@ -78,7 +79,7 @@ export default {
 			formdata:{
 				id:'',
 				name:'',
-				nature:'加编',
+				bedType:'加编',
 				parentname:'',
 				nameId:'',
 			},
@@ -118,7 +119,7 @@ export default {
 		//表格操作删除数据(索引,表格数组数据)\删除房间信息
 		deleteRow(index, rows) {
 			let id=rows[index].id;
-			let url="roominfo/"+id;
+			let url="bedinfo/"+id;
 			let params=null;
 			this.delAjax(url,params).then((res)=>{
 				this.$notify({
@@ -149,7 +150,8 @@ export default {
 		editRow(index, rows) {
 			this.formdata.id=rows.id;
 			this.formdata.parentname=rows.parentName;
-			this.formdata.name=rows.floorName;
+			this.formdata.name=rows.bedName;
+			this.formdata.bedType=rows.bedType;
 			this.formdata.nameId=rows.roomId;
 			this.showflag = true;
 		},
@@ -166,9 +168,10 @@ export default {
 			} else {
 				this.formdata.id=this.radioObj.radiocont.id;
 				this.formdata.parentname=this.radioObj.radiocont.parentName;
-				this.formdata.name=this.radioObj.radiocont.roomName;
-				this.formdata.nameId=this.radioObj.radiocont.roomId;
-				this.btnName="编辑房间信息",
+				this.formdata.name=this.radioObj.radiocont.bedName;
+				this.formdata.bedType=this.radioObj.radiocont.bedType;
+				this.formdata.nameId=this.radioObj.radiocont.bedId;
+				this.btnName="编辑床位信息",
 				this.showflag = true;
 			}
 		},
@@ -183,37 +186,38 @@ export default {
 				}else if(this.treeClickData.id !="10" ){
 					this.$message({
 						showClose: true,
-						message: '只能添加一级楼层',
+						message: '只能添加一级床位',
 						duration: '1500'
 					});
 				} else {
 					this.formdata.id=this.treeClickData.id;
 					this.formdata.parentname=this.treeClickData.label;
-					this.btnName="增加房间信息",
+					this.btnName="增加床位信息",
 					this.showflag = true;
 				}
 		},
 		//弹出框表格提交往服务器写入数据
 		tabsubmit(val) {
-			if(this.btnName=="增加房间信息"){
+			if(this.btnName=="增加床位信息"){
 				let id=val.id+''+parseInt(Math.random(0,1)*10000);
 				let children_arr=[];
 					//ajax请求方法
-					let url="roominfo";
+					let url="bedinfo";
 					let params={
 								"leves":val.id.length/2,
-								"roomId": id,
-								"roomNo": id,
+								"bedId": id,
+								"bedNo": id,
 								"label": val.name,
-								"roomName":val.name,
+								"bedName":val.name,
 								"parentId": val.id+"01",
 								"parentName":val.parentname,
+								"bedType":val.bedType,
 								"children": []
 					}
 					this.pushAjax(url,params).then((res)=>{
 							this.$notify({
 								title: '提示',
-								message: '增加房间信息成功',
+								message: '增加床位信息成功',
 								type: 'success',
 								duration:'1500'
 							});
@@ -226,13 +230,14 @@ export default {
 				console.log('val',val)
 				let id=val.id+''+parseInt(Math.random(0,1)*10000);
 				let children_arr=[];
-				this.putAxios("/roominfo/"+val.id, {
+				this.putAxios("/bedinfo/"+val.id, {
 					"id":id,
 					"leves":'1',
-					"roomId": val.nameId,
-					"roomNo": val.nameId,
+					"bedId": val.nameId,
+					"bedNo": val.nameId,
 					"label": val.name,
-					"roomName":val.name,
+					"bedName":val.name,
+					"bedType":val.bedType,
 					"parentId": '1001',
 					"parentName":val.parentname,
 					"children": [],
@@ -240,7 +245,7 @@ export default {
 					//console.log("userinfo",res);
 					this.$notify({
 						title: '提示',
-						message: '更新房间信息成功',
+						message: '更新床位信息成功',
 						type: 'success',
 						duration:'1500'
 					});

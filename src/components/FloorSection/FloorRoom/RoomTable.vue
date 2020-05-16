@@ -38,7 +38,7 @@
 				<el-table-column resizable show-overflow-tooltip min-width="100px" align="center" prop="roomName" label="房间名称"></el-table-column>
 				<el-table-column resizable show-overflow-tooltip min-width="100px" align="center" prop="parentId" label="父级id"></el-table-column>
 				<el-table-column resizable show-overflow-tooltip min-width="100px" align="center" prop="parentName" label="父级名称"></el-table-column>
-				<el-table-column label="操作" align="center">
+				<el-table-column label="操作" align="center" min-width="100px">
 					<!-- vue组件绑定事件时候，必须加上native ，否则会认为监听的是来自Item组件自定义的事件 -->
 					<template slot-scope="scope">
 						<el-button size="mini" @click.prevent.stop="editRow(scope.$index, scope.row)" type="text">编辑</el-button>

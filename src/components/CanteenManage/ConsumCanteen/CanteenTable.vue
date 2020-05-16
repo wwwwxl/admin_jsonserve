@@ -1,12 +1,15 @@
 <!-- 操作、表格、页码 -->
 <template>
 	<div class="subcon_box">
-		<sectiondialog :form="formdata" :dialogFormVisible="showflag" :operaName="btnName" :labelName="label_name"  @dialogSubmit="tabsubmit" @dialogCancel="tabcancel"></sectiondialog>
+		<!-- 弹框 -->
+		<canteendialog :form="formdata" :dialogFormVisible="showflag" :operaName="btnName" :labelName="label_name"  @dialogSubmit="tabsubmit" @dialogCancel="tabcancel"></canteendialog>
+		<!-- 按钮操作组 -->
 		<el-button-group>
 			<el-button @click.native="addTab" size="mini" type="primary" icon="el-icon-circle-plus-outline">增加</el-button>
 			<el-button @click.native="editTab" size="mini" type="warning" icon="el-icon-edit">修改</el-button>
 			<el-button @click.native="delTab" size="mini" type="danger" icon="el-icon-delete">删除</el-button>
 		</el-button-group>
+		<!-- 表格内容 -->
 		<div class="subcon_table">
 			<el-table
 				:data="tableData"
@@ -28,11 +31,17 @@
 						<el-radio v-model="radioObj.radioindex" :label="scope.$index"></el-radio>
 					</template>
 				</el-table-column>
-				<el-table-column resizable show-overflow-tooltip min-width="90px" align="center" sortable fixed prop="id" label="id"></el-table-column>
-				<el-table-column resizable show-overflow-tooltip min-width="90px" align="center" sortable fixed prop="floorleves" label="级别"></el-table-column>
-				<el-table-column resizable show-overflow-tooltip min-width="90px" align="center" sortable fixed prop="floorId" label="楼层id"></el-table-column>
-				<el-table-column resizable show-overflow-tooltip min-width="110px" align="center" sortable fixed prop="floorNo" label="楼层编号"></el-table-column>
-				<el-table-column resizable show-overflow-tooltip min-width="100px" align="center" prop="floorName" label="楼层名称"></el-table-column>
+				<el-table-column resizable show-overflow-tooltip min-width="120px" align="center" sortable fixed prop="canteenNo" label="食堂编号"></el-table-column>
+				<el-table-column resizable show-overflow-tooltip min-width="120px" align="center" sortable fixed prop="canteenName" label="食堂名称"></el-table-column>
+				<el-table-column resizable show-overflow-tooltip min-width="150px" align="center" label="配送方式">
+					<el-table-column resizable show-overflow-tooltip min-width="50px" align="center" prop="distribuType.distribu" label="配送"></el-table-column>
+					<el-table-column resizable show-overflow-tooltip min-width="50px" align="center" prop="distribuType.myTake" label="自取"></el-table-column>
+					<el-table-column resizable show-overflow-tooltip min-width="50px" align="center" prop="distribuType.inDinner" label="堂食"></el-table-column>
+				</el-table-column>
+				<el-table-column resizable show-overflow-tooltip min-width="100px" align="center" prop="SchedulType" label="排班方式"></el-table-column>
+				<el-table-column resizable show-overflow-tooltip min-width="100px" align="center" prop="labelImg" label="图片"></el-table-column>
+				<el-table-column resizable show-overflow-tooltip min-width="100px" align="center" prop="remark" label="备注说明"></el-table-column>
+				<el-table-column resizable show-overflow-tooltip min-width="100px" align="center" prop="id" label="食堂id"></el-table-column>
 				<el-table-column resizable show-overflow-tooltip min-width="100px" align="center" prop="parentId" label="父级id"></el-table-column>
 				<el-table-column resizable show-overflow-tooltip min-width="100px" align="center" prop="parentName" label="父级名称"></el-table-column>
 				<el-table-column label="操作" align="center" min-width="100px">
@@ -60,7 +69,7 @@
 </template>
 
 <script>
-import sectiondialog from './SectionDialog.vue';
+import canteendialog from './CanteenDialog.vue';
 export default {
 	name: 'submain',
 	props:['tableData','treeClickData'],
@@ -70,13 +79,16 @@ export default {
 			btnName:'',
 			label_name:[
 				{id:'1',label:'父级名称'},
-				{id:'2',label:'楼层名称'}
+				{id:'2',label:'食堂名称'}
 			],
 			formdata:{
 				id:'',
 				name:'',
+				SchedulType:'按周循环排班',
 				parentname:'',
-				floorid:'',
+				nameId:'',
+				remark:'',
+				distribuType:[]
 			},
 			radioObj: {
 				radioindex: '',
@@ -86,7 +98,7 @@ export default {
 		};
 	},
 	components: {
-		sectiondialog
+		canteendialog
 	},
 	methods: {
 		//行数据的 Key,//通过行数据获取选中行的索引
@@ -111,13 +123,11 @@ export default {
 		pageCurrentChange(val) {
 			console.log(`当前页: ${val}`);
 		},
-		//表格操作删除数据(索引,表格数组数据)
+		//表格操作删除数据(索引,表格数组数据)\删除房间信息
 		deleteRow(index, rows) {
 			let id=rows[index].id;
-			
-			let url="floorinfo/"+id;
+			let url="canteeninfo/"+id;
 			let params=null;
-			//删除楼层科室数据
 			this.delAjax(url,params).then((res)=>{
 				this.$notify({
 					title: '提示',
@@ -125,37 +135,10 @@ export default {
 					type: 'success',
 					duration:'1000'
 				});
-				this.$emit("addData");
+				this.$emit("addData");//将删除事件成功抛出，使其更新数据
 			}).catch((error)=>{
 				console.log('error',error);
 			})
-			// $.ajax({
-			// 	url: "http://localhost:3000/floorinfo/"+id,
-			// 	async: false, //改为同步避免运行跳过(一定要是同步不然会获取不到数据)
-			// 	dataType: 'json',
-			// 	type: "DELETE",
-			// 	xhrFields: {
-			// 		withCredentials: true
-			// 	},
-			// 	data: {
-					
-			// 	},
-			// 	beforeSend: function() {
-			
-			// 	},
-			// 	complete: function() {
-			
-			// 	},
-			// 	success: (res)=> {
-			// 			this.$notify({
-			// 				title: '提示',
-			// 				message: '删除成功',
-			// 				type: 'success',
-			// 				duration:'1000'
-			// 			});
-			// 	}
-			
-			// })
 		},
 		//表格头删除事件
 		delTab() {
@@ -174,13 +157,39 @@ export default {
 		editRow(index, rows) {
 			this.formdata.id=rows.id;
 			this.formdata.parentname=rows.parentName;
-			this.formdata.name=rows.floorName;
-			this.formdata.floorid=rows.floorId;
+			this.formdata.name=rows.canteenName;
+			this.formdata.SchedulType=rows.SchedulType;
+			this.formdata.nameId=rows.id;
+			this.formdata.remark=rows.remark;
+			//设置弹框多选
+			if(rows.distribuType.distribu=="是"){
+				this.formdata.distribuType.push("配送");
+			}else{
+			let index=this.formdata.distribuType.findIndex((val)=>{
+					return val=="配送"
+				});
+				this.formdata.distribuType.slice(index,1);
+			}
+			if(rows.distribuType.myTake=="是"){
+				this.formdata.distribuType.push("自取");
+			}else{
+				let index=this.formdata.distribuType.findIndex((val)=>{
+						return val=="自取"
+					});
+					this.formdata.distribuType.slice(index,1);
+			}
+			if(rows.distribuType.inDinner=="是"){
+				this.formdata.distribuType.push("堂食");
+			}else{
+				let index=this.formdata.distribuType.findIndex((val)=>{
+						return val=="堂食"
+					});
+					this.formdata.distribuType.slice(index,1);
+			}
 			this.showflag = true;
 		},
-		//表格头编辑事件
+		//表格头编辑事件//0和'空'默认相等
 		editTab() {
-			//0和'空'默认相等
 			console.log('this.radioObj',this.radioObj);
 			if (this.radioObj.radiocont == null||this.radioObj.radiocont=="") {
 				this.$message({
@@ -190,13 +199,38 @@ export default {
 					duration: '1500'
 				});
 			} else {
-				
 				this.formdata.id=this.radioObj.radiocont.id;
 				this.formdata.parentname=this.radioObj.radiocont.parentName;
-				this.formdata.name=this.radioObj.radiocont.floorName;
-				this.formdata.floorid=this.radioObj.radiocont.floorId;
-				
-				this.btnName="编辑楼层科室信息",
+				this.formdata.name=this.radioObj.radiocont.canteenName;
+				this.formdata.SchedulType=this.radioObj.radiocont.SchedulType;
+				this.formdata.nameId=this.radioObj.radiocont.id;
+				this.formdata.remark=this.radioObj.radiocont.remark;
+				//设置弹框多选
+				if(this.radioObj.radiocont.distribuType.distribu=="是"){
+					this.formdata.distribuType.push("配送");
+				}else{
+					let index=this.formdata.distribuType.findIndex((val)=>{
+							return val=="配送"
+						});
+						this.formdata.distribuType.slice(index,1);
+				}
+				if(this.radioObj.radiocont.distribuType.myTake=="是"){
+					this.formdata.distribuType.push("自取");
+				}else{
+					let index=this.formdata.distribuType.findIndex((val)=>{
+							return val=="自取"
+						});
+						this.formdata.distribuType.slice(index,1);
+				}
+				if(this.radioObj.radiocont.distribuType.inDinner=="是"){
+					this.formdata.distribuType.push("堂食");
+				}else{
+					let index=this.formdata.distribuType.findIndex((val)=>{
+							return val=="堂食"
+						});
+						this.formdata.distribuType.slice(index,1);
+				}
+				this.btnName="编辑食堂信息",
 				this.showflag = true;
 			}
 		},
@@ -211,66 +245,58 @@ export default {
 				}else if(this.treeClickData.id !="10" ){
 					this.$message({
 						showClose: true,
-						message: '只能添加一级楼层',
+						message: '只能添加一级食堂',
 						duration: '1500'
 					});
 				} else {
+					//传递数据给弹框并显示
 					this.formdata.id=this.treeClickData.id;
 					this.formdata.parentname=this.treeClickData.label;
-					
-					this.btnName="增加楼层科室信息",
+					this.btnName="增加食堂信息",
 					this.showflag = true;
-					
 				}
-			
 		},
-		//弹出框表格提交
+		//弹出框表格提交往服务器写入数据
 		tabsubmit(val) {
-			//往服务器写入数据
-			if(this.btnName=="增加楼层科室信息"){
-				let floorid=val.id+''+parseInt(Math.random(0,1)*100);
+			if(this.btnName=="增加食堂信息"){
+				let id=val.id+''+parseInt(Math.random(0,1)*10000);
 				let children_arr=[];
-					//axios请求方法
-					// this.postAxios("floorinfo",{
-					// 		"floorleves":val.id.length/2,
-					// 		"floorId": floorid,
-					// 		"floorNo": floorid,
-					// 		"label": val.name,
-					// 		"floorName":val.name,
-					// 		"parentId": val.id,
-					// 		"parentName":val.parentname,
-					// 		"children": [],
-							
-					// }).then((res)=>{
-					// 	//console.log(res);
-					// 	this.$notify({
-					// 		title: '提示',
-					// 		message: '增加楼层信息成功',
-					// 		type: 'success',
-					// 		duration:'1500'
-					// 	});
-					// 	this.$emit("addData");
-					// }).catch((error)=>{
-					// 	console.log("error",error);
-					// })
-					
 					//ajax请求方法
-					let url="floorinfo";
+					let url="canteeninfo";
+					//弹框多选数组
+					let distribu_type=val.distribuType;
+					let distribu_obj={
+						distribu:"否",
+						myTake:"否",
+						inDinner:"否"
+					}
+					for(var i=0;i<distribu_type.length;i++){
+						if(distribu_type[i]=="配送"){
+							distribu_obj.distribu="是";
+						}
+						if(distribu_type[i]=="堂食"){
+							distribu_obj.myTake="是";
+						}
+						if(distribu_type[i]=="自取"){
+							distribu_obj.inDinner="是";
+						}
+					}
 					let params={
-								"floorleves":val.id.length/2,
-								"floorId": floorid,
-								"floorNo": floorid,
-								"label": val.name,
-								"floorName":val.name,
-								"parentId": val.id,
+								"canteenNo": id,
+								"canteenName":val.name,
+								"SchedulType":val.SchedulType,
+								"labelImg":"",
+								"remark":val.remark,
+								"id": id,
+								"parentId": val.id+"01",
 								"parentName":val.parentname,
+								"distribuType":JSON.stringify(distribu_obj),
 								"children": []
 					}
 					this.pushAjax(url,params).then((res)=>{
-						//console.log('res',res);
 							this.$notify({
 								title: '提示',
-								message: '增加楼层信息成功',
+								message: '增加食堂信息成功',
 								type: 'success',
 								duration:'1500'
 							});
@@ -278,28 +304,27 @@ export default {
 					}).catch((error)=>{
 						console.log('error',error);
 					})
-				
-	
+			//编辑事件更新数据库数据\axios请求方法
 			}else{
 				console.log('val',val)
-				let id=val.id+''+parseInt(Math.random(0,1)*100);
+				let id=val.id+''+parseInt(Math.random(0,1)*10000);
 				let children_arr=[];
-				//发起请求更新编辑楼层科室信息===axios请求方法
-				this.putAxios("/floorinfo/"+val.id, {
+				this.putAxios("/canteeninfo/"+val.id, {
 					"id":id,
-					"floorleves":'1',
-					"floorId": val.floorid,
-					"floorNo": val.floorid,
+					"leves":'1',
+					"canteenId": val.nameId,
+					"canteenNo": val.nameId,
 					"label": val.name,
-					"floorName":val.name,
-					"parentId": '10',
+					"canteenName":val.name,
+					"canteenType":val.canteenType,
+					"parentId": '1001',
 					"parentName":val.parentname,
 					"children": [],
 				}).then((res) => {
 					//console.log("userinfo",res);
 					this.$notify({
 						title: '提示',
-						message: '更新楼层科室信息成功',
+						message: '更新食堂信息成功',
 						type: 'success',
 						duration:'1500'
 					});
@@ -309,11 +334,6 @@ export default {
 				}).catch((res) => {
 					console.log("error", res);
 				});
-				
-				
-				
-				
-				
 			}
 			this.showflag = false;
 		},

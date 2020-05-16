@@ -99,37 +99,28 @@
 						this.nav_tip.leves_one=item.name;
 					}
 				});
-				//找到二级导航名称
-				if(val != '6-1'){
-					switch (val){
-						case "1001":
-						this.leftindex=0;
-						break;
-						case "1002":
-						this.leftindex=1;
-						break;
-						case "1003":
-						this.leftindex=2;
-						break;
-						case "1004":
-						this.leftindex=3;
-						break;
-						case "1005":
-						this.leftindex=4;
-						break;
-						case "1006":
-						this.leftindex=5;
-						break;
-					}
+				if(val!='6-1'){
+					//找到二级菜单以及内容
+					this.leftindex=this.toplistAll.findIndex((item)=>{
+						return item.id==val
+					});
 					this.leftlist=this.leftlistAll[this.leftindex];
 					this.nav_tip.leves_two=this.leftlist[0].subtit[0].subname;
+					switch (val){
+						case "1001":
+						this.$router.push({path:'/sectionlayout'});
+						break;
+						case "1002":
+						this.$router.push({path:'/canteenlayout'});
+						break;
+					}
+					
 				}else{
+					//点击顶部用户信息
 					this.leftlist=[];
 					this.nav_tip.leves_one="";
 					this.nav_tip.leves_two="";
 				}
-				//回到首页
-				this.$router.push({path:'/homelatout'});
 			},
 			//左侧导航栏点击事件
 			subclick(subval){
@@ -145,7 +136,8 @@
 					case "10010103":
 					this.$router.push({path:'/bedlayout'});
 					break;
-					default:
+					case "10020101":
+					this.$router.push({path:'/canteenlayout'});
 					break;
 				}
 				

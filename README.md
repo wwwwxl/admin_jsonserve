@@ -1,4 +1,4 @@
-# vuecliboostrap
+# vuecliboostrap   @代表绝对路径   ./代表相对路径    utils中util.js放置常用方法
 
 ## Project setup
 ```
