@@ -139,6 +139,9 @@
 					case "10020101":
 					this.$router.push({path:'/canteenlayout'});
 					break;
+					case "10020102":
+					this.$router.push({path:'/setlayout'});
+					break;
 				}
 				
 				

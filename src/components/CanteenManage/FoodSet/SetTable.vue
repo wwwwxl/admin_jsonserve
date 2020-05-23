@@ -2,7 +2,7 @@
 <template>
 	<div class="subcon_box">
 		<!-- 弹框 -->
-		<canteendialog :form="formdata" :dialogFormVisible="showflag" :operaName="btnName" :labelName="label_name"  @dialogSubmit="tabsubmit" @dialogCancel="tabcancel"></canteendialog>
+		<setdialog :form="formdata" :dialogFormVisible="showflag" :operaName="btnName" :labelName="label_name"  @dialogSubmit="tabsubmit" @dialogCancel="tabcancel"></setdialog>
 		<!-- 按钮操作组 -->
 		<el-button-group>
 			<el-button @click.native="addTab" size="mini" type="primary" icon="el-icon-circle-plus-outline">增加</el-button>
@@ -31,19 +31,17 @@
 						<el-radio v-model="radioObj.radioindex" :label="scope.$index"></el-radio>
 					</template>
 				</el-table-column>
-				<el-table-column resizable show-overflow-tooltip min-width="120px" align="center" sortable fixed prop="canteenNo" label="食堂编号"></el-table-column>
 				<el-table-column resizable show-overflow-tooltip min-width="120px" align="center" sortable fixed prop="canteenName" label="食堂名称"></el-table-column>
-				<el-table-column resizable show-overflow-tooltip min-width="150px" align="center" label="配送方式">
-					<el-table-column resizable show-overflow-tooltip min-width="50px" align="center" prop="distribu" label="配送"></el-table-column>
-					<el-table-column resizable show-overflow-tooltip min-width="50px" align="center" prop="myTake" label="自取"></el-table-column>
-					<el-table-column resizable show-overflow-tooltip min-width="50px" align="center" prop="inDinner" label="堂食"></el-table-column>
-				</el-table-column>
-				<el-table-column resizable show-overflow-tooltip min-width="100px" align="center" prop="SchedulType" label="排班方式"></el-table-column>
-				<el-table-column resizable show-overflow-tooltip min-width="100px" align="center" prop="labelImg" label="图片"></el-table-column>
-				<el-table-column resizable show-overflow-tooltip min-width="100px" align="center" prop="remark" label="备注说明"></el-table-column>
-				<el-table-column resizable show-overflow-tooltip min-width="100px" align="center" prop="id" label="食堂id"></el-table-column>
-				<el-table-column resizable show-overflow-tooltip min-width="100px" align="center" prop="parentId" label="父级id"></el-table-column>
-				<el-table-column resizable show-overflow-tooltip min-width="100px" align="center" prop="parentName" label="父级名称"></el-table-column>
+				<el-table-column resizable show-overflow-tooltip min-width="100px" align="center" prop="menuId" label="餐别id"></el-table-column>
+				<el-table-column resizable show-overflow-tooltip min-width="100px" align="center" prop="menuName" label="餐别名称"></el-table-column>
+				<el-table-column resizable show-overflow-tooltip min-width="100px" align="center" prop="whetherOrder" label="是否可订餐"></el-table-column>
+				<el-table-column resizable show-overflow-tooltip min-width="120px" align="center" prop="pubMenuType" label="菜谱发布方式"></el-table-column>
+				<el-table-column resizable show-overflow-tooltip min-width="100px" align="center" prop="orderStart" label="订餐开始"></el-table-column>
+				<el-table-column resizable show-overflow-tooltip min-width="100px" align="center" prop="orderStop" label="订餐截止"></el-table-column>
+				<el-table-column resizable show-overflow-tooltip min-width="100px" align="center" prop="whetherBack" label="是否可退"></el-table-column>
+				<el-table-column resizable show-overflow-tooltip min-width="100px" align="center" prop="backStop" label="退餐截止"></el-table-column>
+				<el-table-column resizable show-overflow-tooltip min-width="100px" align="center" prop="canteenId" label="食堂id"></el-table-column>
+				<el-table-column resizable show-overflow-tooltip min-width="100px" align="center" prop="canteenNo" label="食堂编号"></el-table-column>
 				<el-table-column label="操作" align="center" min-width="100px">
 					<!-- vue组件绑定事件时候，必须加上native ，否则会认为监听的是来自Item组件自定义的事件 -->
 					<template slot-scope="scope">
@@ -69,7 +67,7 @@
 </template>
 
 <script>
-import canteendialog from './CanteenDialog.vue';
+import setdialog from './SetDialog.vue';
 export default {
 	name: 'submain',
 	props:['tableData','treeClickData'],
@@ -79,7 +77,7 @@ export default {
 			btnName:'',
 			label_name:[
 				{id:'1',label:'父级名称'},
-				{id:'2',label:'食堂名称'}
+				{id:'2',label:'餐别名称'}
 			],
 			formdata:{
 				id:'',
@@ -98,7 +96,7 @@ export default {
 		};
 	},
 	components: {
-		canteendialog
+		setdialog
 	},
 	methods: {
 		//行数据的 Key,//通过行数据获取选中行的索引
@@ -209,7 +207,7 @@ export default {
 					distribuType:distri_bute
 				}
 				this.formdata=form_data;
-				this.btnName="编辑食堂信息",
+				this.btnName="编辑餐别信息",
 				this.showflag = true;
 			}
 		},
@@ -224,20 +222,20 @@ export default {
 				}else if(this.treeClickData.id !="10" ){
 					this.$message({
 						showClose: true,
-						message: '只能添加一级食堂',
+						message: '只能添加一级餐别',
 						duration: '1500'
 					});
 				} else {
 					//传递数据给弹框并显示
 					this.formdata.id=this.treeClickData.id;
 					this.formdata.parentname=this.treeClickData.label;
-					this.btnName="增加食堂信息",
+					this.btnName="增加餐别信息",
 					this.showflag = true;
 				}
 		},
 		//弹出框表格提交往服务器写入数据
 		tabsubmit(val) {
-			if(this.btnName=="增加食堂信息"){
+			if(this.btnName=="增加餐别信息"){
 				let id=val.id+''+parseInt(Math.random(0,1)*10000);
 				let children_arr=[];
 					//ajax请求方法
@@ -277,7 +275,7 @@ export default {
 					this.pushAjax(url,params).then((res)=>{
 							this.$notify({
 								title: '提示',
-								message: '增加食堂信息成功',
+								message: '增加餐别信息成功',
 								type: 'success',
 								duration:'1500'
 							});
@@ -324,7 +322,7 @@ export default {
 					//console.log("userinfo",res);
 					this.$notify({
 						title: '提示',
-						message: '更新食堂信息成功',
+						message: '更新餐别信息成功',
 						type: 'success',
 						duration:'1500'
 					});

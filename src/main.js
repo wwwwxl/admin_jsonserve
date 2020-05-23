@@ -26,6 +26,7 @@ import SectionLayOut from './components/FloorSection/FloorSection/SectionLayOut.
 import RoomLayOut from './components/FloorSection/FloorRoom/RoomLayOut.vue'
 import BedLayOut from './components/FloorSection/FloorBed/BedLayOut.vue'
 import CanteenLayOut from './components/CanteenManage/ConsumCanteen/CanteenLayOut.vue'
+import SetLayOut from './components/CanteenManage/FoodSet/SetLayOut.vue'
 
 Vue.use(animated)
 Vue.use(VueRouter)
@@ -80,6 +81,10 @@ var router = new VueRouter({
 				{
 				path: "/canteenlayout",
 				component: CanteenLayOut
+				},
+				{
+				path: "/setlayout",
+				component: SetLayOut
 				},
 			]
 		},

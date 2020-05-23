@@ -1,17 +1,17 @@
 <template>
 	<el-container>
 			<el-aside width="200px">
-				<canteentree :leftData="leftData" @leftTree="left_click"></canteentree>
+				<settree :leftData="leftData" @leftTree="left_click"></settree>
 			</el-aside>
 			<el-main>
-				<canteentable :tableData="tableData" :treeClickData="leftClick" @addData="addSuccess"></canteentable>
+				<settable :tableData="tableData" :treeClickData="leftClick" @addData="addSuccess"></settable>
 			</el-main>
 	</el-container>
 </template>
 <!-- 用户主内容包含树状图和主要内容 -->
 <script>
-	import canteentree from './CanteenTree.vue'
-	import canteentable from './CanteenTable.vue'
+	import settree from './SetTree.vue'
+	import settable from './SetTable.vue'
 	export default {
 		name: 'maincon',
 		data: () => {
@@ -22,8 +22,8 @@
 			}
 		},
 		components: {
-			canteentree,
-			canteentable
+			settree,
+			settable
 		},
 		created() {
 			this.getallFloor();
@@ -34,9 +34,9 @@
 			},
 			//获取床位信息数据方法
 			getallFloor(){
-				this.getAxios("/canteeninfo", {
+				this.getAxios("/foodinfo", {
 				}).then((res) => {
-					console.log("canteeninfo", res);
+					console.log("foodinfo", res);
 					this.tableData=res;
 					let left_list=[];
 					let all_bed={
@@ -50,17 +50,17 @@
 						let bed_obj={
 							id:res[i].id,
 							label:res[i].canteenName,
+							canteenId:res[i].canteenId,
 							canteenName:res[i].canteenName,
 							canteenNo:res[i].canteenNo,
-							parentId:res[i].parentId,
-							parentName:res[i].parentName,
-							remark:res[i].remark,
-							labelImg:res[i].labelImg,
-							SchedulType:res[i].SchedulType,
-							distribu: res[i].distribu,
-							myTake: res[i].myTake,
-							inDinner: res[i].inDinner,
-							children:[]
+							menuId:res[i].menuId,
+							menuName:res[i].menuName,
+							whetherOrder:res[i].whetherOrder,
+							pubMenuType: res[i].pubMenuType,
+							orderStart: res[i].orderStart,
+							orderStop: res[i].orderStop,
+							whetherBack:res[i].whetherBack,
+							backStop: res[i].backStop
 						}
 						all_bed.children.push(bed_obj);
 					}
@@ -84,7 +84,7 @@
 	}
 </script>
 
-<style scoped>
+<style  scoped>
 	.el-container {
 		height: 100%;
 	}

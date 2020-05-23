@@ -90,7 +90,7 @@
 						success: (res)=> {
 							sessionStorage.setItem('islogin', 1);
 							this.$router.push({
-								path: '/homelatout'
+								path: '/homelayout'
 							});
 						}
 
